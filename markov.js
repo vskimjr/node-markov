@@ -12,11 +12,8 @@ class MarkovMachine {
     this.words = text.split(/[ \r\n]+/);
     this.chains = this.getChains();
 
-    console.log("this.chains:", this.chains);
-
-    // TODO: potentially remove this -- ask
-    this.text = this.getText();
-    console.log('Markov String:', this.text);
+    // this.text = this.getText();
+    // console.log('Markov String:', this.text);
   }
 
   /** Get markov chain: returns object of Markov chains.
@@ -44,7 +41,6 @@ class MarkovMachine {
     // ... we'll set this to null.
 
     const words = this.words;
-    console.log("these are the words", words);
 
     let textChain = {};
 
@@ -53,21 +49,24 @@ class MarkovMachine {
 
     // ["The","cat","is","in","the",'hat.',"The","cat","is"]
 
+    // TODO: write this better. Think about other logical operators like or, or use a map here: map.has()
+    // . . . look at the solution
+
     for (let i = 0; i < words.length; i++) {
 
-      console.log("word:", words[i]);
-      console.log("textChain:", textChain);
-
       if (!(words[i] in textChain)) {
-        console.log("not in chain:", words[i])
+
         if (words[i + 1] === undefined) {
-          textChain[words[i]].push(null);
+          textChain[words[i]] = [null];
+
         } else {
           textChain[words[i]] = [words[i + 1]];
         }
+
       } else {
         if (words[i + 1] === undefined) {
           textChain[words[i]].push(null);
+
         } else {
           textChain[words[i]].push(words[i + 1]);
         }
@@ -93,20 +92,21 @@ class MarkovMachine {
 
     let currentWord = this.words[0];
     let markovString = currentWord;
-
-    let nextWord; // start as undefined
+    // let nextWord; // start as undefined
 
     while (currentWord !== null) {
 
       const nextWordPool = this.chains[currentWord];
+      // TODO: maybe rename to nextWordChain
 
       const poolMin = 0;
       const poolMax = nextWordPool.length - 1;
 
       // grab a random word from pool
+      // TODO: 106–108 make it a private function
       const nextWordIdx = Math.floor(
         Math.random() * (poolMax - poolMin + 1) + poolMin
-        );
+      );
 
       const nextWord = nextWordPool[nextWordIdx];
 
@@ -116,6 +116,9 @@ class MarkovMachine {
       }
 
       markovString += ` ${nextWord}`;
+      // TODO: instead of concatonating strings, save words in an array and join them with space
+      // ... think time complexity
+
       currentWord = nextWord;
 
     }
@@ -123,3 +126,7 @@ class MarkovMachine {
     return markovString;
   }
 }
+
+module.exports = {
+  MarkovMachine,
+};
